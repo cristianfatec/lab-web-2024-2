@@ -1,102 +1,263 @@
 openapi: 3.0.3
-
 info:
-  title: API de Produtos
-  description: Produtos de Venda da Empresa X
-  termsOfService: http//swager.io/terms
-  contact:
-    email: fatec@fatecfranca.edu.br
-  license:
-    name: Apache 2.0
-    url: http//swager.io/terms
+  title: API de Gestão de Alunos e Produtos
+  description: API para gerenciar alunos e produtos, incluindo CRUD e filtros avançados.
   version: 1.0.0
 
 servers:
-  - url: http://sistema-compass-homolog.com.br
-  - url: https://sistema-compass.com.br
+  - url: /v1
+    description: Servidor de Desenvolvimento
 
 paths:
-  /produtos:
+  /alunos:
+    get:
+      summary: Listar todos os alunos
+      description: Retorna a lista de alunos cadastrados com filtros opcionais.
+      operationId: getAlunos
+      parameters:
+        - name: idade
+          in: query
+          description: Idade dos alunos.
+          schema:
+            type: integer
+        - name: nome
+          in: query
+          description: Nome dos alunos.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Status dos alunos.
+          schema:
+            type: string
+            enum: [ATIVO, INATIVO, SUSPENSO]
+            default: ATIVO
+      responses:
+        '200':
+          description: Lista de alunos retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aluno'
     post:
-      summary: Cadastra novos produtos
+      summary: Criar novo aluno
+      description: Cria um novo aluno com as informações fornecidas.
+      operationId: createAluno
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProdutoRequest"
+              $ref: '#/components/schemas/AlunoCreate'
       responses:
         '201':
-          description: Sucesso cadastro produto
+          description: Aluno criado com sucesso.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProdutoResponse"
-                
-                
+                $ref: '#/components/schemas/Aluno'
+
+  /alunos/{id}:
+    get:
+      summary: Buscar aluno por ID
+      description: Retorna as informações do aluno com base no ID fornecido.
+      operationId: getAlunoById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do aluno.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Aluno encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aluno'
+        '404':
+          description: Aluno não encontrado.
+    put:
+      summary: Atualizar aluno
+      description: Atualiza as informações de um aluno existente.
+      operationId: updateAluno
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do aluno a ser atualizado.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Aluno atualizado com sucesso.
+    delete:
+      summary: Remover aluno
+      description: Remove o aluno com base no ID fornecido.
+      operationId: deleteAluno
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do aluno a ser removido.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Aluno removido com sucesso.
+        '404':
+          description: Aluno não encontrado.
+
+  /produtos:
+    get:
+      summary: Listar todos os produtos
+      description: Retorna a lista de produtos cadastrados.
+      operationId: listProdutos
+      parameters:
+        - name: name
+          in: query
+          description: Nome do produto.
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Categoria do produto.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de produtos retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+    post:
+      summary: Criar novo produto
+      description: Cria um novo produto.
+      operationId: createProduto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoCreate'
+      responses:
+        '201':
+          description: Produto criado com sucesso.
+
+  /produtos/{id}:
+    get:
+      summary: Buscar produto por ID
+      description: Retorna informações de um produto específico.
+      operationId: getProdutoById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Produto encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '404':
+          description: Produto não encontrado.
+    put:
+      summary: Atualizar produto
+      description: Atualiza informações de um produto específico.
+      operationId: updateProduto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto.
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoCreate'
+      responses:
+        '200':
+          description: Produto atualizado.
+    delete:
+      summary: Remover produto
+      description: Remove um produto.
+      operationId: deleteProduto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Produto removido com sucesso.
+
 components:
   schemas:
-    
-    ProdutoRequest:
-      type: object
-      properties:
-        descricao:
-          type: string
-          description: Descricao do produto
-          example: Geladeira
-          maxLength: 100
-          minLength: 5
-        preco: 
-          type: object
-          properties:
-            custo:
-              type: number
-              format: decimal
-              example: 19.99
-              description: Preço custo produto
-            venda:
-              type: number
-              format: decimal
-              example: 25.87
-              description: Preco de venda consumidor
-        categorias:
-          type: array
-          items:
-            type: string
-          example: ["A", "B"]
-      required:
-        - descricao
-        - categorias
-        - preco
-
-    ProdutoResponse:
+    Aluno:
       type: object
       properties:
         id:
           type: integer
-          example: 29394
-        descricao:
+        nome:
           type: string
-          description: Descricao do produto
-          example: Geladeira
-          maxLength: 100
-          minLength: 5
-        preco: 
-          type: object
-          properties:
-            custo:
-              type: number
-              format: decimal
-              example: 19.99
-              description: Preço custo produto
-            venda:
-              type: number
-              format: decimal
-              example: 25.87
-              description: Preco de venda consumidor
-        categorias:
-          type: array
-          items:
-            type: string
-          example: ["A", "B"]
-    
+        idade:
+          type: integer
+    AlunoCreate:
+      type: object
+      required:
+        - nome
+        - idade
+      properties:
+        nome:
+          type: string
+        idade:
+          type: integer
+    Produto:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        brand:
+          type: string
+        price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+    ProdutoCreate:
+      type: object
+      required:
+        - name
+        - category
+        - brand
+        - price
+        - quantity
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        brand:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
