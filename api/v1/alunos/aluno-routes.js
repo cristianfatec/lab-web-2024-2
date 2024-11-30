@@ -1,3 +1,5 @@
+//./api/v1/alunos/aluno-routes.js
+
 const alunoController = require("./aluno-controller");
 const alunoSchema = require("./aluno-schema");
 

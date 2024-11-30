@@ -1,29 +1,44 @@
-const Produto = require('./produto-model');
 
-async function criarProduto(dados) {
-  return await Produto.create(dados);
+
+const produtoModel = require('./produtoModel');
+
+const save = async (produto) => {
+    const saved = await produtoModel.Produto.create(produto)
+    return produto;
 }
 
-async function atualizarProduto(id, dados) {
-  return await Produto.update(dados, { where: { id } });
+const list = async(filters) => {   
+    const whereClause = {};
+    if (filters.name) {
+        whereClause.name = filters.name;
+    }  
+    if (filters.category) {
+        whereClause.category = filters.category;
+    } 
+    if (filters.brand) {
+        whereClause.brand = filters.brand;
+    } 
+    return await produtoModel.Produto.findAll({
+        where: whereClause
+    });
 }
 
-async function excluirProduto(id) {
-  return await Produto.destroy({ where: { id } });
+const findById = async (id) => {   
+    return await produtoModel.Produto.findByPk(id); 
 }
 
-async function buscarProdutoPorId(id) {
-  return await Produto.findByPk(id);
+const update = async (id, produto) => {
+    const [updated] = await produtoModel.Produto.update(produto, {
+        where: { id: id }
+    });
+    return updated ? await produtoModel.Produto.findByPk(id) : null;
 }
 
-async function buscarProdutosPorFiltro(filtros) {
-  return await Produto.findAll({ where: filtros });
+const remove = async (id) => {
+    const deleted = await produtoModel.Produto.destroy({
+        where: { id: id }
+    });
+    return deleted; 
 }
 
-module.exports = {
-  criarProduto,
-  atualizarProduto,
-  excluirProduto,
-  buscarProdutoPorId,
-  buscarProdutosPorFiltro,
-};
+module.exports = {save, list, findById, update, remove};

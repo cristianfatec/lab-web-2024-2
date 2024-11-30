@@ -1,48 +1,59 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../../config/db');
+const Sequelize = require('sequelize');
+const database = require('../../../config/db');
 
-const Produto = sequelize.define('Produto', {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-  },
-  nome: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  descricao: {
-    type: DataTypes.STRING,
-  },
-  categoria: {
-    type: DataTypes.STRING,
-  },
-  marca: {
-    type: DataTypes.STRING,
-  },
-  preco: {
-    type: DataTypes.FLOAT,
-  },
-  quantidadeEstoque: {
-    type: DataTypes.INTEGER,
-  },
-  codigoBarras: {
-    type: DataTypes.STRING,
-  },
-  dimensoes: {
-    type: DataTypes.JSON,
-  },
-  peso: {
-    type: DataTypes.JSON,
-  },
-  status: {
-    type: DataTypes.STRING,
-  },
-  dataCadastro: {
-    type: DataTypes.DATE,
-  },
+const Produto = database.sequelize.define('Produto', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: true,
+        primaryKey: true,
+    },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    brand: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    price: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+    },
+    quantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    },
+    codeBar: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    dimension: {
+        type: Sequelize.JSON,
+        allowNull: true,
+    },
+    weight: {
+        type: Sequelize.JSON,
+        allowNull: true,
+    },
+    status: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
+
 }, {
-  tableName: 'produtos',
-  timestamps: false,
+    Sequelize,
+    modelName: 'produto',
+    tableName: 'produto',
+    timestamps: true,
 });
 
-module.exports = Produto;
+module.exports = {Produto}

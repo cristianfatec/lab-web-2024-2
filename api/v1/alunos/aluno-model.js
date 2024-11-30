@@ -1,3 +1,5 @@
+//./api/v1/alunos/aluno-model.js
+
 const Sequelize = require('sequelize');
 const database = require('../../../config/db');
 
